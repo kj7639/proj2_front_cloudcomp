@@ -2,38 +2,30 @@
 
 import { Chart, Colors } from "chart.js/auto"
 import { Pie } from "react-chartjs-2"
-import { useState, useEffect } from "react"
+import { useMemo } from "react"
 
 Chart.register(Colors)
 
 export default function PieChart({ data }) {
 
-  const [dataSet, setDataSet] = useState({
-    labels: [],
-    datasets: []
-  })
+  const dataSet = useMemo(() => {
+    if (!data || !data.distribution) return { labels: [], datasets: [] };
 
-  useEffect(() => {
-    if (!data || !data.distribution) return
-
-    // Sort cuisines by count
     const sorted = Object.entries(data.distribution)
-      .sort((a, b) => b[1] - a[1])
+      .sort((a, b) => b[1] - a[1]);
 
-    // Take top 6 cuisines
-    const top = sorted.slice(0, 6)
-    const other = sorted.slice(6)
+    const top = sorted.slice(0, 6);
+    const other = sorted.slice(6);
 
-    const labels = top.map(([cuisine]) => cuisine)
-    const values = top.map(([_, count]) => count)
+    const labels = top.map(([cuisine]) => cuisine);
+    const values = top.map(([, count]) => count);
 
-    // Sum remaining as "Other"
     if (other.length > 0) {
-      labels.push("Other")
-      values.push(other.reduce((sum, [, count]) => sum + count, 0))
+      labels.push("Other");
+      values.push(other.reduce((sum, [, count]) => sum + count, 0));
     }
 
-    setDataSet({
+    return {
       labels,
       datasets: [
         {
@@ -49,8 +41,8 @@ export default function PieChart({ data }) {
           ],
         },
       ],
-    })
-  }, [data])
+    };
+  }, [data]);
 
   const options = {
     responsive: true,

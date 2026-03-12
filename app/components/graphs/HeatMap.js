@@ -3,53 +3,52 @@
 import { Chart, Colors, Title, Tooltip, Legend } from "chart.js"
 import { MatrixController, MatrixElement } from 'chartjs-chart-matrix'
 import { Chart as ReactChart } from "react-chartjs-2"
-import { useState, useEffect } from "react"
+import { useMemo } from "react"
 
 Chart.register(Colors, Title, Tooltip, Legend, MatrixController, MatrixElement)
 
 export default function HeatMap({ data }) {
-  const [chartData, setChartData] = useState({ datasets: [] })
+  // ensure we only treat data that's an array
+  const isArray = Array.isArray(data);
 
-  // Define nutrients outside useEffect so options can access it
-  const nutrients = ["Protein(g)", "Carbs(g)", "Fat(g)"]
-  const diets = data?.map(d => d.Diet_type) || []
+  const nutrients = ["Protein(g)", "Carbs(g)", "Fat(g)"];
+  const diets = isArray ? data.map(d => d.Diet_type) : [];
 
-  useEffect(() => {
-    if (!data || data.length === 0) return
+  // Compute chart data based solely on the incoming `data` prop.
+  const chartData = useMemo(() => {
+    if (!isArray || data.length === 0) return { datasets: [] };
 
-    // find max value for color normalization
     const maxValue = Math.max(
       ...data.flatMap(d => nutrients.map(n => d[n]))
-    )
+    );
 
-    // build matrix points
-    const points = []
+    const points = [];
     nutrients.forEach((nutrient) => {
       data.forEach((diet) => {
         points.push({
           x: diet.Diet_type,
           y: nutrient,
           v: diet[nutrient]
-        })
-      })
-    })
+        });
+      });
+    });
 
-    setChartData({
+    return {
       datasets: [
         {
           label: "Macros Heatmap",
           data: points,
           backgroundColor: context => {
-            const val = context.dataset.data[context.dataIndex].v
-            const alpha = val / maxValue // normalized opacity
-            return `rgba(59,130,246,${alpha})`
+            const val = context.dataset.data[context.dataIndex].v;
+            const alpha = val / maxValue; // normalized opacity
+            return `rgba(59,130,246,${alpha})`;
           },
           width: ({ chart }) => ((chart.chartArea?.width ?? 0) / diets.length) - 10,
           height: ({ chart }) => ((chart.chartArea?.height ?? 0) / nutrients.length) - 10
         }
       ]
-    })
-  }, [data])
+    };
+  }, [data, isArray]);
 
   const options = {
     responsive: true,
@@ -64,8 +63,8 @@ export default function HeatMap({ data }) {
       tooltip: {
         callbacks: {
           label: function(context) {
-            const point = context.raw
-            return `${point.y}: ${point.v}g (${point.x})`
+            const point = context.raw;
+            return `${point.y}: ${point.v}g (${point.x})`;
           }
         }
       }

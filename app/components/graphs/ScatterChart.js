@@ -2,26 +2,22 @@
 
 import { Chart, Colors }from "chart.js/auto"
 import { Scatter } from 'react-chartjs-2'
-import { useState, useEffect } from "react"
+import { useMemo } from "react"
 
 Chart.register(Colors)
 
 export default function ScatterChart({ data }){
 
-  const [dataSet, setDataSet] = useState({
-    datasets: []
-  })
-
-  useEffect(() => {
-    if (!data || !data.recipes) return
+  const dataSet = useMemo(() => {
+    if (!data || !data.recipes) return { datasets: [] };
 
     const points = data.recipes.map((recipe) => ({
       x: recipe["Protein(g)"],
       y: recipe["Carbs(g)"],
       recipe: recipe["Recipe_name"]
-    }))
+    }));
 
-    setDataSet({
+    return {
       datasets: [
         {
           label: "Protein vs Carbs",
@@ -30,8 +26,8 @@ export default function ScatterChart({ data }){
           pointRadius: 3
         }
       ]
-    })
-  }, [data])
+    };
+  }, [data]);
 
   return (
     <div className="h-full">

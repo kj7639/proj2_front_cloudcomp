@@ -2,25 +2,21 @@
 
 import { Chart, Colors }from "chart.js/auto"
 import { Bar } from 'react-chartjs-2'
-import { useState, useEffect } from "react"
+import { useMemo } from "react"
 
 Chart.register(Colors)
 
 export default function BarChart({data}){
 
-  const [dataSet, setDataSet] = useState({
-    labels: [],
-    datasets: []
-  })
+  // derive the chart dataset directly instead of storing in state
+  const dataSet = useMemo(() => {
+    if (!data || !data.macros) return { labels: [], datasets: [] };
 
-  useEffect(() => {
-    if (!data || !data.macros) return
+    const labels = Object.keys(data.macros);
+    const values = Object.values(data.macros);
 
-    const labels = Object.keys(data.macros)
-    const values = Object.values(data.macros)
-
-    setDataSet({
-      labels: labels,
+    return {
+      labels,
       datasets: [
         {
           data: values,
@@ -36,8 +32,8 @@ export default function BarChart({data}){
           ],
           borderWidth: 2,
         },
-      ]
-    });
+      ],
+    };
   }, [data]);
 
   return (

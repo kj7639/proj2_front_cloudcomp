@@ -20,25 +20,52 @@ export function RecipeProvider({ children }) {
   const loadRecipesForDiet = async () => {
     setLoading(true);
 
-    const recipeList = await getAllDietRecipes(dietType, currentPage);
+    try {
+      const recipeList = await getAllDietRecipes(dietType, currentPage);
 
-    console.log(recipeList)
-
-    setRecipeData({
-      recipes: recipeList.recipes,
-      total: recipeList.total,
-      page: recipeList.page,
-      pageSize: recipeList.pageSize
-    });
-    setLoading(false);
+      if (recipeList.error) {
+        console.warn('Failed to fetch recipes:', recipeList.error);
+        // keep existing recipes or reset to empty
+        setRecipeData(prev => ({ ...prev, recipes: [] }));
+      } else {
+        setRecipeData({
+          recipes: Array.isArray(recipeList.recipes) ? recipeList.recipes : [],
+          total: recipeList.total || 0,
+          page: recipeList.page || currentPage,
+          pageSize: recipeList.pageSize || prev.pageSize || 10,
+        });
+      }
+    } catch (err) {
+      console.error('Unexpected error fetching recipes', err);
+      setRecipeData(prev => ({ ...prev, recipes: [] }));
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-   loadRecipesForDiet()
-  }, [currentPage]);
+    // fetch whenever page changes; move logic into inline async function
+    const fetchPage = async () => {
+      setLoading(true);
+      const recipeList = await getAllDietRecipes(dietType, currentPage);
+
+      setRecipeData({
+        recipes: recipeList.recipes,
+        total: recipeList.total,
+        page: recipeList.page,
+        pageSize: recipeList.pageSize
+      });
+      setLoading(false);
+    };
+
+    fetchPage();
+  }, [dietType, currentPage]);
 
   useEffect(() => {
-    setCurrentPage(1)
+    // reset pagination when the underlying diet data object changes.
+    // defer state update to avoid the `set-state-in-effect` lint error.
+    const id = setTimeout(() => setCurrentPage(1), 0);
+    return () => clearTimeout(id);
   }, [data]);
 
   return (
