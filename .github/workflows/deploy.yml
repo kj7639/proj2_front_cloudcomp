@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 env:
-  AZURE_WEBAPP_NAME: a2-webapp-gtcrheh4byc0gsbh
+  AZURE_WEBAPP_NAME: A2-webapp
   NODE_VERSION: '20.x'
 
 jobs:
@@ -47,4 +47,3 @@ jobs:
       run: az logout
       continue-on-error: true
 
-      
