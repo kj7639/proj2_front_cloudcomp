@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { DataProvider } from "@/app/context/DataContext";
-import {RecipeProvider} from "@/app/context/RecipeContext";
+import { RecipeProvider } from "@/app/context/RecipeContext";
 
-const geistSans = Geist({
+const inter = Inter({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
+const robotoMono = Roboto_Mono({
   variable: "--font-geist-mono",
+  weight: ["400", "500", "700"],
   subsets: ["latin"],
 });
 
@@ -27,13 +28,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${inter.variable} ${robotoMono.variable} antialiased`}
       >
-       <DataProvider>
-           <RecipeProvider>
-               {children}
-           </RecipeProvider>
-       </DataProvider>
+        <DataProvider>
+          <RecipeProvider>
+            {children}
+          </RecipeProvider>
+        </DataProvider>
       </body>
     </html>
   );
