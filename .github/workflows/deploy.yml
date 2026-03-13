@@ -40,7 +40,7 @@ jobs:
       - name: Deploy to Azure Web App (PRE-BUILT)
         uses: azure/webapps-deploy@v3
         with:
-          app-name: A2-webapp
+          app-name: a2-webapp-gtcrheh4byc0gsbh
           package: .
         env:
           SCM_DO_BUILD_DURING_DEPLOYMENT: false
