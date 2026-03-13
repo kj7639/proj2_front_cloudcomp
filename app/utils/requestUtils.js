@@ -1,25 +1,21 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = '/api/proxy';  // ← Proxy through your own Next.js server
 
 if (!API_URL) {
-  console.error('NEXT_PUBLIC_API_URL is not defined. Check your .env.local file.');
+  console.error('Proxy not configured');
 }
 
 /**
- * Generic GET request helper
- * @param {string} endpoint - API route (e.g., "/avg_macro_nutrients")
- * @param {Object} params - query parameters as key-value object
+ * Generic GET request helper - proxies through Next.js API
+ * @param {string} endpoint - API route (e.g., "/avg_macro_nutrients") 
+ * @param {Object} params - query parameters
  */
 export async function getData(endpoint, params = {}) {
-  if (!API_URL) {
-    const msg = 'API URL not configured';
-    console.error(msg);
-    return { error: msg };
-  }
-
   try {
     // Build query string
     const query = new URLSearchParams(params).toString();
     const url = `${API_URL}${endpoint}${query ? `?${query}` : ""}`;
+
+    console.log('Proxying to:', url);  // Debug log
 
     const response = await fetch(url);
 
@@ -35,3 +31,4 @@ export async function getData(endpoint, params = {}) {
     return { error: error.message || String(error) };
   }
 }
+
