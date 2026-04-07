@@ -33,4 +33,4 @@ RUN npm ci --omit=dev
 
 EXPOSE 3000
 
-CMD ["npm", "run", "start"]
+CMD ["npx", "next", "start", "-p", "3000", "-H", "0.0.0.0"]
