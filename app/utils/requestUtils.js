@@ -1,13 +1,9 @@
-const API_URL = '/api/proxy';  // ← Proxy through your own Next.js server
-
-if (!API_URL) {
-  console.error('Proxy not configured');
-}
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 /**
- * Generic GET request helper - proxies through Next.js API
- * @param {string} endpoint - API route (e.g., "/avg_macro_nutrients") 
- * @param {Object} params - query parameters
+ * Generic GET request helper
+ * @param {string} endpoint - API route (e.g., "/avg_macro_nutrients")
+ * @param {Object} params - query parameters as key-value object
  */
 export async function getData(endpoint, params = {}) {
   try {
@@ -15,20 +11,15 @@ export async function getData(endpoint, params = {}) {
     const query = new URLSearchParams(params).toString();
     const url = `${API_URL}${endpoint}${query ? `?${query}` : ""}`;
 
-    console.log('Proxying to:', url);  // Debug log
-
     const response = await fetch(url);
 
     if (!response.ok) {
-      const msg = `API request failed with status ${response.status}`;
-      console.error(msg, { url });
-      return { error: msg };
+      throw new Error(`API request failed with status ${response.status}`);
     }
 
     return await response.json();
   } catch (error) {
     console.error("Error fetching API:", error);
-    return { error: error.message || String(error) };
+    return { error: error.message };
   }
 }
-

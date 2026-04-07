@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import GraphHolder from "./GraphHolder"
 import {useData} from "@/app/context/DataContext";
