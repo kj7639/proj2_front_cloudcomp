@@ -59,7 +59,7 @@ export function RecipeProvider({ children }) {
     };
 
     fetchPage();
-  }, [dietType, currentPage]);
+  }, [currentPage]);
 
   useEffect(() => {
     // reset pagination when the underlying diet data object changes.

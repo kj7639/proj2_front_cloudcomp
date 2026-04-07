@@ -43,7 +43,7 @@ export default function Pagination() {
   if (totalPages <= 1) return null;
 
   return (
-    <div className="flex items-center justify-center mt-4 gap-2">
+    <div className="flex items-center justify-center m-4 gap-2">
       <button
         onClick={() => handlePageClick(currentPage - 1)}
         disabled={currentPage === 1 || loading}

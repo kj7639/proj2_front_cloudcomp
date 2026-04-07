@@ -68,7 +68,7 @@ export function DataProvider({ children }) {
     };
 
     initialize();
-  }, [dietType]);
+  }, []);
 
   return (
     <NutritionContext.Provider value={{ dietType, data, loading, setDietType, loadDataForDiet }}>

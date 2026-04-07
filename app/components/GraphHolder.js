@@ -15,10 +15,10 @@ export default function GraphHolder({title, desc, type, data}){
   const Chart = charts[type]
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-lg">
+    <div className="bg-white p-4 rounded-lg shadow-lg h-full flex flex-col">
       <h2 className="text-md">{title}</h2>
       <p className="text-gray-500 text-sm">{desc}</p>
-      <div className="h-9/10">
+      <div className="flex-1">
         {Chart ? (
           data ? <Chart data={data}/> : <p>Loading...</p>
         ) : (
