@@ -8,7 +8,13 @@ const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 export async function getData(endpoint, params = {}) {
   try {
     const query = new URLSearchParams(params).toString();
-    const url = `${API_URL}${endpoint}${query ? `?${query}` : ""}`;
+    const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+    if (!API_URL) {
+      console.error("NEXT_PUBLIC_BACKEND_URL is undefined!");
+    }
+
+    const url = `${API_URL.replace(/\/$/, "")}${endpoint}${query ? `?${query}` : ""}`;
 
     console.log("Fetching API URL:", url);
 
