@@ -9,15 +9,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout repo
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Setup Docker
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # 3. Configure AWS credentials
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -25,30 +22,42 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # 4. Login to ECR
       - name: Login to Amazon ECR
         run: |
           aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | \
           docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY_FRONTEND }}
 
-      # 5. Build Docker image with backend URL passed as build-arg
       - name: Build Docker image
         run: |
-          echo "Building Docker image with backend URL: ${{ secrets.NEXT_PUBLIC_BACKEND_URL }}"
           docker build \
             --build-arg NEXT_PUBLIC_BACKEND_URL=${{ secrets.NEXT_PUBLIC_BACKEND_URL }} \
-            -t nextjs-app:${{ github.sha }} .
+            -t ${{ secrets.ECR_REPOSITORY_FRONTEND }}:${{ github.sha }} .
 
-      # 6. Push Docker image to ECR
       - name: Push Docker image
         run: |
-          docker tag nextjs-app:${{ github.sha }} ${{ secrets.ECR_REPOSITORY_FRONTEND }}:latest
-          docker push ${{ secrets.ECR_REPOSITORY_FRONTEND }}:latest
+          docker push ${{ secrets.ECR_REPOSITORY_FRONTEND }}:${{ github.sha }}
 
-      # 7. Deploy to ECS
-      - name: Deploy to ECS
+      - name: Update ECS task definition and deploy
         run: |
+          # Get current task definition
+          TASK_DEF=$(aws ecs describe-task-definition \
+            --task-definition ${{ secrets.ECS_FRONTEND_TASK_DEFINITION }} \
+            --query 'taskDefinition' \
+            --output json)
+
+          # Update the image in the task definition
+          NEW_TASK_DEF=$(echo $TASK_DEF | jq \
+            --arg IMAGE "${{ secrets.ECR_REPOSITORY_FRONTEND }}:${{ github.sha }}" \
+            '.containerDefinitions[0].image = $IMAGE | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)')
+
+          # Register new task definition revision
+          NEW_REVISION=$(aws ecs register-task-definition \
+            --cli-input-json "$NEW_TASK_DEF" \
+            --query 'taskDefinition.taskDefinitionArn' \
+            --output text)
+
+          # Update service with new task definition
           aws ecs update-service \
             --cluster ${{ secrets.ECS_CLUSTER_NAME }} \
             --service ${{ secrets.ECS_FRONTEND_SERVICE_NAME }} \
-            --force-new-deployment
+            --task-definition $NEW_REVISION
