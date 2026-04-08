@@ -10,16 +10,10 @@ RUN npm ci
 # Copy source code
 COPY . .
 
-# Build-time environment variable
+# Build with backend URL baked in
 ARG NEXT_PUBLIC_BACKEND_URL
-RUN echo "Backend URL at build: $NEXT_PUBLIC_BACKEND_URL"
-RUN NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL npm run build
-
-# Debug: log the URL in build logs
 RUN echo "Building with NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL"
-
-# Build Next.js app
-RUN npm run build
+RUN NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL npm run build
 
 # ---------- 2. Production stage ----------
 FROM node:18-alpine
@@ -28,14 +22,11 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-# Copy built app and package.json from builder
-COPY --from=builder /app ./
+# Copy built app from builder
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 
-# Install only production dependencies
-RUN npm ci --omit=dev
-
-# Expose the port
 EXPOSE 3000
 
-# Start the app
-CMD ["npx", "next", "start", "-p", "3000", "-H", "0.0.0.0"]
+CMD ["node", "server.js"]
