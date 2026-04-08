@@ -10,12 +10,12 @@ RUN npm ci
 # Copy source code
 COPY . .
 
-# Build-time environment variable (must be passed as --build-arg)
+# Build-time environment variable
 ARG NEXT_PUBLIC_BACKEND_URL
-ENV NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL}
+ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL
 
 # Debug: log the URL in build logs
-RUN echo "Building with NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL}"
+RUN echo "Building with NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL"
 
 # Build Next.js app
 RUN npm run build

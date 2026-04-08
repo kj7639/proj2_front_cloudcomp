@@ -8,9 +8,6 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
-    env:
-      NEXT_PUBLIC_BACKEND_URL: ${{ secrets.NEXT_PUBLIC_BACKEND_URL }}
-
     steps:
       # 1. Checkout repo
       - name: Checkout repository
@@ -34,12 +31,12 @@ jobs:
           aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | \
           docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY_FRONTEND }}
 
-      # 5. Build Docker image
+      # 5. Build Docker image with backend URL passed as build-arg
       - name: Build Docker image
         run: |
-          echo "Building Docker image with NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL}"
+          echo "Building Docker image with backend URL: ${{ secrets.NEXT_PUBLIC_BACKEND_URL }}"
           docker build \
-            --build-arg NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL} \
+            --build-arg NEXT_PUBLIC_BACKEND_URL=${{ secrets.NEXT_PUBLIC_BACKEND_URL }} \
             -t nextjs-app:${{ github.sha }} .
 
       # 6. Push Docker image to ECR
