@@ -6,7 +6,7 @@ import {RecipeDisplay} from "@/app/components/RecipeDisplay";
 import SecurityAndCompliance from "@/app/components/Security";
 import OAuth from "@/app/components/OAuth";
 import ResourceCleanup from "@/app/components/Cleanup";
-
+export const dynamic = 'force-dynamic';
 export default function Home(){
   return (
     <div className="bg-gray-100 w-screen h-screen overflow-auto">

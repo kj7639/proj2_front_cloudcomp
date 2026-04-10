@@ -9,12 +9,19 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@prisma/adapter-pg": "^7.7.0",
+    "@prisma/client": "^7.7.0",
     "autoprefixer": "^10.4.27",
+    "better-auth": "^1.6.1",
     "chart.js": "^4.5.1",
     "chartjs-chart-matrix": "^3.0.0",
     "geist": "^1.7.0",
     "next": "^15.5.14",
+    "next-auth": "^5.0.0-beta.30",
+    "otplib": "^13.4.0",
+    "pg": "^8.20.0",
     "postcss": "^8.5.8",
+    "qrcode": "^1.5.4",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.3.1",
     "react-dom": "^18.3.1",
@@ -24,8 +31,10 @@
     "@types/node": "^20.17.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
+    "dotenv": "^17.4.1",
     "eslint": "^8.57.0",
     "eslint-config-next": "15.0.0",
+    "prisma": "^7.7.0",
     "typescript": "^5.5.4"
   }
 }
