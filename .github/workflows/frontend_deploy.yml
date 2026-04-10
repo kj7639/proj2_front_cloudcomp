@@ -31,6 +31,7 @@ jobs:
         run: |
           docker build \
             --build-arg NEXT_PUBLIC_BACKEND_URL=${{ secrets.NEXT_PUBLIC_BACKEND_URL }} \
+            --build-arg NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }} \
             -t ${{ secrets.ECR_REPOSITORY_FRONTEND }}:${{ github.sha }} .
 
       - name: Push Docker image
@@ -45,10 +46,26 @@ jobs:
             --query 'taskDefinition' \
             --output json)
 
-          # Update the image in the task definition
           NEW_TASK_DEF=$(echo $TASK_DEF | jq \
             --arg IMAGE "${{ secrets.ECR_REPOSITORY_FRONTEND }}:${{ github.sha }}" \
-            '.containerDefinitions[0].image = $IMAGE | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)')
+            --arg DB_URL "${{ secrets.DATABASE_URL }}" \
+            --arg AUTH_SECRET "${{ secrets.BETTER_AUTH_SECRET }}" \
+            --arg GOOGLE_ID "${{ secrets.GOOGLE_CLIENT_ID }}" \
+            --arg GOOGLE_SECRET "${{ secrets.GOOGLE_CLIENT_SECRET }}" \
+            --arg GITHUB_ID "${{ secrets.GITHUB_CLIENT_ID }}" \
+            --arg GITHUB_SECRET "${{ secrets.GITHUB_CLIENT_SECRET }}" 
+            --arg API_SECRET "${{ secrets.API_SECRET_KEY }}" \
+            '.containerDefinitions[0].image = $IMAGE |
+            .containerDefinitions[0].environment = [
+                {"name": "DATABASE_URL", "value": $DB_URL},
+                {"name": "BETTER_AUTH_SECRET", "value": $AUTH_SECRET},
+                {"name": "GOOGLE_CLIENT_ID", "value": $GOOGLE_ID},
+                {"name": "GOOGLE_CLIENT_SECRET", "value": $GOOGLE_SECRET},
+                {"name": "GITHUB_CLIENT_ID", "value": $GITHUB_ID},
+                {"name": "GITHUB_CLIENT_SECRET", "value": $GITHUB_SECRET},
+                {"name": "API_SECRET_KEY", "value": $API_SECRET}
+                ] |
+                del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)')
 
           # Register new task definition revision
           NEW_REVISION=$(aws ecs register-task-definition \
