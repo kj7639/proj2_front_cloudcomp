@@ -34,11 +34,11 @@ module.exports = {
         }
       ],
       afterFiles: [
-        // Route remaining API calls based on environment
+        // Route remaining API calls (excluding auth) based on environment
         {
           source: '/api/:path((?!auth/).*)',
           destination: process.env.NEXT_PUBLIC_BACKEND_URL 
-            ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/:path*`
+            ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/:path*`
             : '/api/:path*',
         }
       ]
