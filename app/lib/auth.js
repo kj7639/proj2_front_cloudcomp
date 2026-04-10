@@ -52,7 +52,7 @@ const getAuthInstance = () => {
   emailAndPassword: {
     enabled: true
   },
-
+// fixed it
   socialProviders: {
       google: {
         clientId: process.env.GOOGLE_CLIENT_ID,
