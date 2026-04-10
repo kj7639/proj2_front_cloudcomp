@@ -55,12 +55,12 @@ const getAuthInstance = () => {
 
   socialProviders: {
       google: {
-        clientId: process.env.GOOGLE_CLIENT_ID || "40886871215-l2nuap0sl79nf7m5g763jm07afp4no3b.apps.googleusercontent.com",
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET || "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"
+        clientId: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET
       },
       github: {
-        clientId: process.env.GITHUB_CLIENT_ID || "Ov23liBZBK5v13fD0wlt",
-        clientSecret: process.env.GITHUB_CLIENT_SECRET || "56b5e56dad2da138e441242fbad090c1c3c04ddb"
+        clientId: process.env.GITHUB_CLIENT_ID,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET
       }
     },
 
