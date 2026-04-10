@@ -5,7 +5,7 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 
 const sendAccessStatus = async(status)=>{
     try {
-        await fetch(`${BACKEND_URL}/access-status`, {
+        await fetch(`${BACKEND_URL}/api/access-status`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ status }),
