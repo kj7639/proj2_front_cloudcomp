@@ -39,6 +39,11 @@ npx @better-auth/cli@latest generate --with-plugins=twoFactor
 # and maybe
 npm install next-auth/react
 
+# handle deprecation
+npm install -g npm@11
+npm install rimraf@latest glob@10 eslint@latest
+
+npm install --save-dev eslint@^9.0.0
 ```
 
 ## Deploy on Vercel
