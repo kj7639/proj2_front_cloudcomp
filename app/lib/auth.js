@@ -34,6 +34,10 @@ const getAuthInstance = () => {
 
   const prisma = getPrismaClient()
 
+  if (!process.env.BETTER_AUTH_SECRET) {
+    throw new Error("BETTER_AUTH_SECRET must be set in the environment before starting the app.")
+  }
+
   authInstance = betterAuth({
     baseURL: {
       allowedHosts: [
@@ -71,7 +75,7 @@ const getAuthInstance = () => {
       nextCookies()
     ],
 
-    secret: process.env.BETTER_AUTH_SECRET || (process.env.NODE_ENV === "development" ? "dev-secret" : undefined),
+    secret: process.env.BETTER_AUTH_SECRET,
 
     trustedOrigins: ["http://localhost:3000", "http://localhost:3004", "https://cpsy300.me"],
 

@@ -22,5 +22,15 @@
 
 /** @type {import('next').NextConfig} */
 module.exports = {
-  // Removed output: 'standalone' and rewrites for Vercel deployment
+  output: 'standalone',
+  // Simple rewrite: keep auth requests local, everything else routes naturally
+  async rewrites() {
+    return [
+      {
+        // Keep auth requests local - handled by Next.js API route
+        source: '/api/auth/:path*',
+        destination: '/api/auth/:path*',
+      }
+    ]
+  },
 }
