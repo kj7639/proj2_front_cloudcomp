@@ -25,20 +25,14 @@ export async function getData(endpoint, params = {}) {
 
     });
 
-    console.log("Response status:", response.status);
-
     if (!response.ok) {
-      const text = await response.text(); // get raw response for debugging
-      console.error("Non-OK response:", text);
       throw new Error(`API request failed with status ${response.status}`);
     }
 
     const data = await response.json();
-    console.log("Response data:", data);
     return data;
 
   } catch (error) {
-    console.error("Error fetching API:", error);
     return { error: error.message };
   }
 

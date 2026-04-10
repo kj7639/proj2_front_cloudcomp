@@ -32,8 +32,23 @@ export default function SecurityAndCompliance() {
     return () => clearInterval(interval)
   }, []);
 
-  const color = (key) =>
-    status?.[key] === EXPECTED[key] ? "text-green-600" : "text-red-600";
+  const color = (key) => {
+    const value = status?.[key];
+    
+    // Special handling for access_control
+    if (key === "access_control") {
+      if (value?.toLowerCase().includes("authenticated") || value === "Secure") {
+        return "text-green-600";
+      } else if (value?.toLowerCase().includes("not authenticated") || value?.toLowerCase().includes("unauthenticated")) {
+        return "text-yellow-600";
+      } else{
+        return "text-red-600";
+      }
+    }
+    
+    // Default behavior for other keys
+    return value === EXPECTED[key] ? "text-green-600" : "text-red-600";
+  };
 
   return (
       <div>
