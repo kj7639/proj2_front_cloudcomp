@@ -53,7 +53,7 @@ jobs:
             --arg GOOGLE_ID "${{ secrets.GOOGLE_CLIENT_ID }}" \
             --arg GOOGLE_SECRET "${{ secrets.GOOGLE_CLIENT_SECRET }}" \
             --arg GITHUB_ID "${{ secrets.GITHUB_CLIENT_ID }}" \
-            --arg GITHUB_SECRET "${{ secrets.GITHUB_CLIENT_SECRET }}" 
+            --arg GITHUB_SECRET "${{ secrets.GITHUB_CLIENT_SECRET }}" \
             --arg API_SECRET "${{ secrets.API_SECRET_KEY }}" \
             '.containerDefinitions[0].image = $IMAGE |
             .containerDefinitions[0].environment = [
