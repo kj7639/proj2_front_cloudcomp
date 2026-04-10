@@ -21,14 +21,27 @@
 
 
 /** @type {import('next').NextConfig} */
-module.exports = {  output: 'standalone',  // Production config - both frontend and backend on same domain
-  // Auth requests handled by local proxy in development, other API calls go through rewrites
+module.exports = {
+  output: 'standalone',
+  // Rewrites to handle API requests properly
   async rewrites() {
-    return [
-      {
-        source: '/api/:path((?!auth/).*)',
-        destination: 'https://cpsy300.me/api/:path*',
-      },
-    ]
+    return {
+      beforeFiles: [
+        {
+          // Keep auth requests local - don't rewrite them
+          source: '/api/auth/:path*',
+          destination: '/api/auth/:path*',
+        }
+      ],
+      afterFiles: [
+        // Route remaining API calls based on environment
+        {
+          source: '/api/:path((?!auth/).*)',
+          destination: process.env.NEXT_PUBLIC_BACKEND_URL 
+            ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/:path*`
+            : '/api/:path*',
+        }
+      ]
+    }
   },
 }
