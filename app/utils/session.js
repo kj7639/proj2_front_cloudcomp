@@ -5,7 +5,9 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 
 const sendAccessStatus = async(status)=>{
     try {
-        await fetch(`${BACKEND_URL}/api/access-status`, {
+        // Use relative path to avoid /api/api double prefix
+        // The rewrite rule will handle routing to the backend
+        await fetch(`/api/access-status`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ status }),
@@ -13,7 +15,7 @@ const sendAccessStatus = async(status)=>{
     } catch (err) {
         console.warn("Failed to send access status:", err)
     }
-}
+
 export function useSession() {
     const [session, setSession] = useState(null)
     const [loading, setLoading] = useState(false)
