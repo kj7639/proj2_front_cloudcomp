@@ -52,8 +52,8 @@ jobs:
             --arg AUTH_SECRET "${{ secrets.BETTER_AUTH_SECRET }}" \
             --arg GOOGLE_ID "${{ secrets.GOOGLE_CLIENT_ID }}" \
             --arg GOOGLE_SECRET "${{ secrets.GOOGLE_CLIENT_SECRET }}" \
-            --arg GITHUB_ID "${{ secrets.GITHUB_CLIENT_ID }}" \
-            --arg GITHUB_SECRET "${{ secrets.GITHUB_CLIENT_SECRET }}" \
+            --arg GITHUB_ID "${{ secrets.GH_CLIENT_ID }}" \
+            --arg GITHUB_SECRET "${{ secrets.GH_CLIENT_SECRET }}" \
             --arg API_SECRET "${{ secrets.API_SECRET_KEY }}" \
             '.containerDefinitions[0].image = $IMAGE |
             .containerDefinitions[0].environment = [
@@ -61,8 +61,8 @@ jobs:
                 {"name": "BETTER_AUTH_SECRET", "value": $AUTH_SECRET},
                 {"name": "GOOGLE_CLIENT_ID", "value": $GOOGLE_ID},
                 {"name": "GOOGLE_CLIENT_SECRET", "value": $GOOGLE_SECRET},
-                {"name": "GITHUB_CLIENT_ID", "value": $GITHUB_ID},
-                {"name": "GITHUB_CLIENT_SECRET", "value": $GITHUB_SECRET},
+                {"name": "GH_CLIENT_ID", "value": $GITHUB_ID},
+                {"name": "GH_CLIENT_SECRET", "value": $GITHUB_SECRET},
                 {"name": "API_SECRET_KEY", "value": $API_SECRET}
                 ] |
                 del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)')

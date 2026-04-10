@@ -35,16 +35,15 @@ const getAuthInstance = () => {
   const prisma = getPrismaClient()
 
   authInstance = betterAuth({
-    baseURL: "https://cpsy300.me",
-    // baseURL: {
-    //   allowedHosts: [
-    //     "http://localhost:3000",
-    //     "http://localhost:3004",
-    //     "https://cpsy300.me",
-    //     "https://cpsy300-backend-alb-355541218.us-east-2.elb.amazonaws.com"
-    //   ],
-    //   fallback: process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://cpsy300.me"
-    // },
+    baseURL: {
+      allowedHosts: [
+        "http://localhost:3000",
+        "http://localhost:3004",
+        "https://cpsy300.me",
+        "https://cpsy300-backend-alb-355541218.us-east-2.elb.amazonaws.com"
+      ],
+      fallback: process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://cpsy300.me"
+    },
     database: prismaAdapter(prisma, {
     provider: "postgresql",
     serialize: true
@@ -60,8 +59,8 @@ const getAuthInstance = () => {
         clientSecret: process.env.GOOGLE_CLIENT_SECRET
       },
       github: {
-        clientId: process.env.GITHUB_CLIENT_ID,
-        clientSecret: process.env.GITHUB_CLIENT_SECRET
+        clientId: process.env.GH_CLIENT_ID,
+        clientSecret: process.env.GH_CLIENT_SECRET
       }
     },
 
