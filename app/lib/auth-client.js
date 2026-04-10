@@ -24,5 +24,3 @@ export const authClient = new Proxy({}, {
     return client[prop]
   }
 })
-
-// push commit not working on github, testing again
