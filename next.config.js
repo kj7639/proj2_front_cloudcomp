@@ -29,6 +29,8 @@ module.exports = {
       {
         source: '/api/:path((?!auth/).*)',
         destination: 'https://cpsy300.me/api/:path*',
+        // destination: 'http://127.0.0.1:8000/:path*',
+
       },
     ]
   },
