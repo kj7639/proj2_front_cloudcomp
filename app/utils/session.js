@@ -15,6 +15,7 @@ const sendAccessStatus = async(status)=>{
     } catch (err) {
         console.warn("Failed to send access status:", err)
     }
+}
 
 export function useSession() {
     const [session, setSession] = useState(null)
