@@ -28,8 +28,8 @@ module.exports = {
     return [
       {
         // Keep auth requests local - handled by Next.js API route
-        source: '/api/auth/:path*',
-        destination: '/api/auth/:path*',
+        source: '/api/:path((?!auth/).*)',
+        destination: 'https://cpsy300.me/api/:path*',
       }
     ]
   },
