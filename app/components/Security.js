@@ -1,4 +1,39 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+
+const EXPECTED = {
+  encryption: "Enabled",
+  access_control: "Secure",
+  compliance: "GDPR Compliant",
+};
+
 export default function SecurityAndCompliance() {
+  const [status, setStatus] = useState(null);
+
+  const fetchStatus = async () => {
+    try {
+      const res = await fetch('/api/security-status');
+      const data = await res.json();
+      setStatus(data);
+    } catch (err) {
+      console.error("Failed to fetch security status:", err);
+      setStatus({
+        encryption: "failed",
+        access_control: "failed",
+        compliance: "failed",
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchStatus();
+    const interval = setInterval(fetchStatus, 3000)
+    return () => clearInterval(interval)
+  }, []);
+
+  const color = (key) =>
+    status?.[key] === EXPECTED[key] ? "text-green-600" : "text-red-600";
 
   return (
       <div>
@@ -10,17 +45,17 @@ export default function SecurityAndCompliance() {
           <p className="font-medium mb-2">Security Status</p>
 
           <p className="text-sm">
-            Encryption: <span className="text-green-600">Enabled</span>
+            Encryption: <span className={color("encryption")}>{status?.encryption ?? "Unknown"}</span>
           </p>
 
           <p className="text-sm">
-            Access Control: <span className="text-green-600">Secure</span>
+            Access Control: <span className={color("access_control")}>{status?.access_control ?? "Unknown"}</span>
           </p>
 
           <p className="text-sm">
             Compliance:{" "}
-            <span className="text-green-600 underline">
-              GDPR Compliant
+            <span className={`underline ${color("compliance")}`}>
+              {status?.compliance ?? "Unknown"}
             </span>
           </p>
         </div>
