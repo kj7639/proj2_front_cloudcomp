@@ -16,7 +16,7 @@ RUN echo "Building with NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL"
 RUN NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL npm run build
 
 # ---------- 2. Production stage ----------
-FROM node:18-alpine
+FROM node:20-alpine
 
 WORKDIR /app
 
