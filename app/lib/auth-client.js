@@ -6,10 +6,13 @@ let authClientInstance = null
 
 const getAuthClient = () => {
   if (!authClientInstance) {
-    // On the client side, use relative URL so it stays within same domain
-    // On the server side (SSR), this won't be called anyway due to typeof window check
+    // BetterAuth requires an absolute URL, so construct it from the current window location
+    const baseURL = typeof window !== 'undefined'
+      ? `${window.location.protocol}//${window.location.host}/api/auth`
+      : "https://cpsy300.me/api/auth"
+
     authClientInstance = createAuthClient({
-      baseURL: "/api/auth",
+      baseURL,
       plugins: [twoFactorClient()]
     })
   }
