@@ -1,37 +1,14 @@
 "use client"
 import { authClient } from "@/app/lib/auth-client"
 import { useState, useEffect, useCallback } from "react"
+import {useSession} from "@/app/utils/session"
 
 export default function OAuth() {
-  const [session, setSession] = useState(null)
-  const [loading, setLoading] = useState(false)
+  const { session, loading, setLoading, checkSession } = useSession()
   const [error, setError] = useState(null)
   const [totpCode, setTotpCode] = useState("")
   const [show2FA, setShow2FA] = useState(false)
   const [pendingUserId, setPendingUserId] = useState(null)
-
-  // Check session on mount and periodically
-  const checkSession = useCallback(async () => {
-    try {
-      console.log("🔍 Checking session...")
-      const response = await authClient.session.get()
-      console.log("🔍 Session response:", response)
-
-      const sessionData = response?.data || response
-      setSession(sessionData)
-
-      if (sessionData?.user) {
-        console.log("✅ User logged in:", sessionData.user.name || sessionData.user.email)
-        console.log("🔐 2FA enabled:", sessionData.user.twoFactorEnabled ? "Yes" : "No")
-      } else {
-        console.log("❌ No active session")
-      }
-    } catch (error) {
-      console.error("❌ Session check failed:", error)
-      setSession(null)
-      // Don't set error for session check failures, as this is normal when not logged in
-    }
-  }, [])
 
   useEffect(() => {
     checkSession()
