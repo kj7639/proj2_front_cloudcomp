@@ -21,8 +21,7 @@
 
 
 /** @type {import('next').NextConfig} */
-module.exports = {
-  // Production config - both frontend and backend on same domain
+module.exports = {  output: 'standalone',  // Production config - both frontend and backend on same domain
   // Auth requests handled by local proxy in development, other API calls go through rewrites
   async rewrites() {
     return [
