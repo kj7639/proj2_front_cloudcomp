@@ -23,25 +23,14 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
   output: 'standalone',
-  // Rewrites to handle API requests properly
+  // Simple rewrite: keep auth requests local, everything else routes naturally
   async rewrites() {
-    return {
-      beforeFiles: [
-        {
-          // Keep auth requests local - don't rewrite them
-          source: '/api/auth/:path*',
-          destination: '/api/auth/:path*',
-        }
-      ],
-      afterFiles: [
-        // Route remaining API calls (excluding auth) based on environment
-        {
-          source: '/api/:path((?!auth/).*)',
-          destination: process.env.NEXT_PUBLIC_BACKEND_URL 
-            ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/:path*`
-            : '/api/:path*',
-        }
-      ]
-    }
+    return [
+      {
+        // Keep auth requests local - handled by Next.js API route
+        source: '/api/auth/:path*',
+        destination: '/api/auth/:path*',
+      }
+    ]
   },
 }
