@@ -7,7 +7,7 @@ const sendAccessStatus = async(status)=>{
     try {
         // Use relative path to avoid /api/api double prefix
         // The rewrite rule will handle routing to the backend
-        await fetch(`/api/access-status`, {
+        await fetch(`${BACKEND_URL}/access-status`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ status }),
@@ -33,15 +33,16 @@ export function useSession() {
             if (sessionData?.user) {
                 console.log("✅ User logged in:", sessionData.user.name || sessionData.user.email)
                 console.log("🔐 2FA enabled:", sessionData.user.twoFactorEnabled ? "Yes" : "No")
+                await sendAccessStatus("Authenticated")
             } else {
                 console.log("❌ No active session")
+                await sendAccessStatus("Not authenticated")
             }
-            await sendAccessStatus(true)
 
         } catch (error) {
             console.error("❌ Session check failed:", error)
             setSession(null)
-            await sendAccessStatus(false)
+            await sendAccessStatus("Authentication check failed")
         // Don't set error for session check failures, as this is normal when not logged in
         }
   }, [])
